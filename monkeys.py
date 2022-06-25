@@ -79,6 +79,7 @@ def callback_monkeys(pop, fit, gen):
 pop = Evolution(Monkeys).optimize(
     population_size=1000,
     max_generations=10000,
+    sustain_rate=0.1,
     max_fitness=NUM_GENES,
     callback=callback_monkeys,
 )

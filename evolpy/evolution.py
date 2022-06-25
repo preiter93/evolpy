@@ -20,7 +20,7 @@ class Evolution(object):
         max_generations=1000,
         crossover_rate=0.8,
         mutation_rate=0.1,
-        sustain_rate=0.1,
+        sustain_rate=0.0,
         max_fitness=None,
         callback=None,
         offsprings_per_recombination=2,
