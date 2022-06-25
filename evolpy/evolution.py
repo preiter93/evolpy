@@ -20,9 +20,14 @@ class Evolution(object):
         max_generations=1000,
         crossover_rate=0.8,
         mutation_rate=0.1,
+        sustain_rate=0.1,
         max_fitness=None,
+        callback=None,
+        offsprings_per_recombination=2,
     ):
         """
+        TEST!!!!!
+
         Skeletons of operations to perform the evolutionary algorithm.
 
         .. note::
@@ -36,18 +41,38 @@ class Evolution(object):
             fit = [ind.get_fitness() for ind in pop]
 
             # Callback
-            self.callback(fit, gen)
+            if callback is None:
+                self.default_callback(pop, fit, gen)
+            else:
+                callback(pop, fit, gen)
 
             # Terminate
             if self.terminate_max_fitness(fit, max_fitness):
-                print("Individuum reached maximum fitness!")
+                print("An individuum reached its maximum fitness!")
                 return pop
 
             # Create next generation
             pop_child = []
-            for i in range(0, self.get_number_of_recombinations(population_size)):
+
+            # Take some parents over to the next population
+            # TODO: Efficiency
+            if sustain_rate > 0:
+                pop_sorted = pop[:]
+                pop_sorted.sort(key=lambda x: x.get_fitness(), reverse=True)
+                for ind in pop_sorted[: int(sustain_rate * population_size)]:
+                    pop_child.append(ind)
+
+            # for i in range(
+            #     0, self.get_number_of_recombinations(population_size, sustain_rate)
+            # ):
+            for i in range(
+                (population_size - len(pop_child))
+                // self.number_of_offsprings_per_recombination
+            ):
+
                 # Select parents
                 parents = self.selection_of_parents(pop, fit)
+
                 # Recombination
                 if random.random() < crossover_rate:
                     # Apply crossover function
@@ -64,16 +89,22 @@ class Evolution(object):
                     # Store in new population
                     pop_child.append(child)
 
+            # TODO: Check more properly
+            assert (
+                len(pop_child) == population_size
+            ), "Hm, size of population has changed."
+
             # replace population by children
             pop = pop_child
 
-        print("Reach max_generations limit!")
+        print("Reached generations limit, no perfekt individuum found.")
         return pop
 
-    def callback(self, fit, gen):
+    def default_callback(self, pop, fit, gen):
         """
         Callback function.
 
+        :pop: list of population
         :fit: list of populations fitness
         :gen: int, number of generation
         """
@@ -147,18 +178,28 @@ class Evolution(object):
         pos = random.randint(0, num_genes - 1)
         chromosome[pos] = self.individuum.get_new_gene()
 
-    def get_number_of_recombinations(self, population_size):
+    @staticmethod
+    def number_of_offsprings_per_recombination():
         """
-        Return the number of recombinations/matings based on
-        the population size.
+        Get the number of offsprings per recombination
 
-        Default implementations generate two offsprings per recombination,
-        hence this function returns population_size // 2.
-
-                                        .. note::
+        .. note::
         You CAN override this function.
         """
-        return population_size // 2
+        return 2
+
+    # def get_number_of_recombinations(self, population_size, sustain_rate=0):
+    #     """
+    #     Return the number of recombinations/matings based on
+    #     the population size.
+
+    #     Default implementations generate two offsprings per recombination,
+    #     hence this function returns population_size // 2.
+
+    #                                     .. note::
+    #     You CAN override this function.
+    #     """
+    #     return int((population_size - population_size * sustain_rate) // 2)
 
 
 def select_one_roulette(population, fitness):
