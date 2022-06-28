@@ -1,5 +1,5 @@
 import random
-from evolpy.abstract_individuum import AbstractIndividuum
+from evolpy.default_individuums import IndividuumWithListChromosome
 from evolpy.evolution import Evolution
 
 
@@ -25,16 +25,15 @@ NUM_GENES = len(TEXT)
 TEXT_UNICODE = text_to_num(TEXT)
 
 
-class Monkeys(AbstractIndividuum):
+class Monkeys(IndividuumWithListChromosome):
     """
-    Let monkeys evolve to write a certain text.
+    A Monkey aspiring to be Hemingway
 
     Be CAREFUL, this could take some time.
-    The EA is not tuned yet.
     """
 
     @staticmethod
-    def get_new_gene() -> int:
+    def pick_random_gene() -> int:
         """
         Return a random gene from all possible genes
         """
@@ -78,8 +77,9 @@ def callback_monkeys(pop, fit, gen):
 # Run EA
 pop = Evolution(Monkeys).optimize(
     population_size=1000,
-    max_generations=10000,
-    sustain_rate=0.1,
+    max_generations=50,
+    preservation_rate=0.1,
+    mutation_rate=0.1,
     max_fitness=NUM_GENES,
     callback=callback_monkeys,
 )

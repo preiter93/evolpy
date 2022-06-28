@@ -1,6 +1,7 @@
 import random
 from copy import deepcopy
 from .abstract_individuum import AbstractIndividuum
+import numpy as np
 
 
 class Evolution(object):
@@ -20,19 +21,34 @@ class Evolution(object):
         max_generations=1000,
         crossover_rate=0.8,
         mutation_rate=0.1,
-        sustain_rate=0.0,
+        preservation_rate=0.0,
         max_fitness=None,
         callback=None,
         offsprings_per_recombination=2,
     ):
         """
-        TEST!!!!!
-
         Skeletons of operations to perform the evolutionary algorithm.
 
         .. note::
         DO NOT override this function.
         """
+
+        # Define the mix of old and new individuums in each new generation
+        new_individuums = int((1 - preservation_rate) * population_size)
+        new_individuums -= new_individuums & offsprings_per_recombination
+        old_individuums = population_size - new_individuums
+
+        self.display(
+            {
+                "Total population": population_size,
+                "From new generation": new_individuums,
+                "From old generation": old_individuums,
+                "mutation_rate": mutation_rate,
+                "crossover_rate": crossover_rate,
+                "preservation_rate": preservation_rate,
+            }
+        )
+
         # Initiate population
         pop = [self.individuum.new_random() for _ in range(population_size)]
         fit = []
@@ -54,21 +70,7 @@ class Evolution(object):
             # Create next generation
             pop_child = []
 
-            # Take some parents over to the next population
-            # TODO: Efficiency
-            if sustain_rate > 0:
-                pop_sorted = pop[:]
-                pop_sorted.sort(key=lambda x: x.get_fitness(), reverse=True)
-                for ind in pop_sorted[: int(sustain_rate * population_size)]:
-                    pop_child.append(ind)
-
-            # for i in range(
-            #     0, self.get_number_of_recombinations(population_size, sustain_rate)
-            # ):
-            for i in range(
-                (population_size - len(pop_child))
-                // self.number_of_offsprings_per_recombination
-            ):
+            for i in range(new_individuums // offsprings_per_recombination):
 
                 # Select parents
                 parents = self.selection_of_parents(pop, fit)
@@ -88,6 +90,13 @@ class Evolution(object):
 
                     # Store in new population
                     pop_child.append(child)
+
+            # Take some parents over to the next population
+            if old_individuums > 0:
+                # Find indices of N maximum values
+                argmax = list(np.argpartition(fit, -old_individuums)[-old_individuums:])
+                for i in argmax:
+                    pop_child.append(pop[i])
 
             # TODO: Check more properly
             assert (
@@ -139,67 +148,33 @@ class Evolution(object):
 
     def recombine(self, parents):
         """
-        Recombination of parents produces n (default = 2) offsprings.
-
-        Again there are many ways to recombine individuals. The default
-        applies simple recombination with one splitting point of
-        the chromosomes.
+        Recombination of parents produces offsprings.
 
         .. note::
         You CAN override this function.
         """
-        if len(parents) != 2:
-            raise ValueError(
-                "Default implementation of recombination expects 2 parents."
-            )
-        # Get selected parents
-        p1, p2 = parents[0], parents[1]
-        # Extract their chromosomes
-        ch1 = p1.get_chromosome()
-        ch2 = p2.get_chromosome()
-        # ch1 = self.get_chromosome_of_individuum(p1)
-        # ch2 = self.get_chromosome_of_individuum(p2)
-        # Recombine
-        chs = chromosome_crossover_simple(ch1, ch2)
-        return [self.individuum.new_from_chromosome(ch) for ch in chs]
+        return self.individuum.recombine(parents)
 
     def mutate(self, individuum):
         """
         Mutate an individuum.
 
-        Default:
-        Replaces a gene at a random position with a new random gene.
-
         .. note::
         You CAN override this function.
         """
-        chromosome = individuum.get_chromosome()
-        num_genes = len(chromosome)
-        pos = random.randint(0, num_genes - 1)
-        chromosome[pos] = self.individuum.get_new_gene()
+        individuum.mutate()
 
     @staticmethod
-    def number_of_offsprings_per_recombination():
-        """
-        Get the number of offsprings per recombination
-
-        .. note::
-        You CAN override this function.
-        """
-        return 2
-
-    # def get_number_of_recombinations(self, population_size, sustain_rate=0):
-    #     """
-    #     Return the number of recombinations/matings based on
-    #     the population size.
-
-    #     Default implementations generate two offsprings per recombination,
-    #     hence this function returns population_size // 2.
-
-    #                                     .. note::
-    #     You CAN override this function.
-    #     """
-    #     return int((population_size - population_size * sustain_rate) // 2)
+    def display(dict):
+        # width_a = 20
+        # width_b = 10
+        print("-" * 30)
+        for k, v in dict.items():
+            if type(v) == int:
+                print("{:20} : {:5d}".format(k, v))
+            if type(v) == float:
+                print("{:20} : {:5.2f}".format(k, v))
+        print("-" * 30)
 
 
 def select_one_roulette(population, fitness):
@@ -215,21 +190,3 @@ def select_one_roulette(population, fitness):
         current += fit
         if current > pick:
             return ind
-
-
-def chromosome_crossover_simple(p1, p2):
-    """
-    Recombine chromosome with another chromosome of the same type.
-    (i) Picks a random position within the chromosome and
-    (ii) produces two new offsprings from a crossover combination.
-    .. note::
-                    Homologous with 2 parents and 1 split point
-    """
-    num_genes = len(p1)
-    if num_genes < 2:
-        raise ValueError("Number of genes should be larger than two.")
-    pt = random.randint(1, num_genes - 2)
-    # perform crossover
-    c1 = p1[:pt] + p2[pt:]
-    c2 = p2[:pt] + p1[pt:]
-    return [c1, c2]

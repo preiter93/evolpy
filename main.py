@@ -1,14 +1,14 @@
 import random
-from evolpy.abstract_individuum import AbstractIndividuum
 from evolpy.evolution import Evolution
+from evolpy.default_individuums import IndividuumWithListChromosome
 
 NUM_GENES = 20
 WANTED_CHROMOSOME = [1] * NUM_GENES
 
 
-class MyIndividuum(AbstractIndividuum):
+class MyIndividuum(IndividuumWithListChromosome):
     @staticmethod
-    def get_new_gene() -> int:
+    def pick_random_gene() -> int:
         """
         Return a random gene from all possible genes
         """
