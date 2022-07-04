@@ -35,7 +35,7 @@ class Evolution(object):
 
         # Define the mix of old and new individuums in each new generation
         new_individuums = int((1 - preservation_rate) * population_size)
-        new_individuums -= new_individuums & offsprings_per_recombination
+        new_individuums -= new_individuums % offsprings_per_recombination
         old_individuums = population_size - new_individuums
 
         self.display(
@@ -126,6 +126,8 @@ class Evolution(object):
         maximum fitness.
         The maximum fitness must be supplied to optimize()
         """
+        if max_fitness is None:
+            return False
         return max(fit) >= max_fitness
 
     def selection_of_parents(self, population, fitness):
