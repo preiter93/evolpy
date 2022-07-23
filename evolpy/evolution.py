@@ -28,7 +28,16 @@ class Evolution(object):
     ):
         """
         Skeletons of operations to perform the evolutionary algorithm.
-
+        
+        :*population size*: Number of individuals
+        :*max_generations*: Maximum number of generations to evaluate
+        :*crossover_rate*: Chance that two parents cross their genes, otherwise the parents are taken over unchanged as offsprings
+        :*preservation_rate*: Number of best-fit individuals which in all cases are carried over into the new generation.
+        :*mutation_rate*: Chance that the genes of an offspring will be mutated.
+        :*max_fitness*: Convergence criterion.
+        :*callback*: Possibility to use a custom callback function. It must take three arguments callback(pop: list, fit: list, gen: int)
+        where pop is the current population, fit is a list of the individuals fitness value and gen is the number of the current generation.
+        
         .. note::
         DO NOT override this function.
         """
