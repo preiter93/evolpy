@@ -28,7 +28,7 @@ The text to be reproduced is given as a string, and each monkey has a string gen
 - Fitness value (in this case the difference between the original text and the monkey gene).
 
 Pseudocode:
-```
+```python
 from evolpy.default_individuums import IndividuumWithListChromosome
 class Monkeys(IndividuumWithListChromosome):
     @staticmethod
@@ -53,7 +53,7 @@ class Monkeys(IndividuumWithListChromosome):
 ```
 
 To start the evolutionary algorithm we simply call
-```
+```python
 from evolpy.evolution import Evolution
 
 # Run EA
