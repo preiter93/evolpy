@@ -74,3 +74,9 @@ The parameters are defined as:
 - *preservation_rate*: Number of best-fit individuals which in all cases are carried over into the new generation.
 - *mutation_rate*: Chance that the genes of an offspring will be mutated.
 - *max_fitness*: Convergence criterion.
+
+Let's see how long it takes for a monkey to become Hemingway!
+
+![Alt text](examples/monkey.gif?raw=true "Play")
+
+Feel free to let them write what you want. It might just take a little less than infinite time!

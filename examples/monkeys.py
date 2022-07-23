@@ -64,7 +64,7 @@ def callback_monkeys(pop, fit, gen):
     """
     Callback function.
 
-        :pop: list of population
+    :pop: list of population
     :fit: list of populations fitness
     :gen: int, number of generation
     """
@@ -76,8 +76,9 @@ def callback_monkeys(pop, fit, gen):
 
 # Run EA
 pop = Evolution(Monkeys).optimize(
-    population_size=1000,
-    max_generations=50,
+    population_size=2000,
+    max_generations=2000,
+    crossover_rate=0.1,
     preservation_rate=0.1,
     mutation_rate=0.1,
     max_fitness=NUM_GENES,
