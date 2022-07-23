@@ -43,7 +43,7 @@ class Monkeys(IndividuumWithListChromosome):
         """
         Return the number of genes in the chromosome
         """
-        return NUM_GENES
+        return ...
 
     def get_fitness(self) -> int:
         """
