@@ -77,6 +77,6 @@ The parameters are defined as:
 
 Let's see how long it takes for a monkey to become Hemingway!
 
-![Alt text](examples/monkey.gif?raw=true "Play")
+![Alt text](https://github.com/preiter93/evolpy/blob/main/examples/monkeys.gif?raw=true)
 
 Feel free to let them write what you want. It might just take a little less than infinite time!
