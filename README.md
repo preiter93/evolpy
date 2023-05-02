@@ -61,8 +61,8 @@ pop = Evolution(Monkeys).optimize(
     population_size=1000,
     max_generations=50,
     crossover_rate=0.8,
-    preservation_rate=0.1,
-    mutation_rate=0.1,
+    preservation_rate=0.2,
+    mutation_rate=0.5,
     max_fitness=NUM_GENES,
 )
 ```
@@ -80,3 +80,8 @@ Let's see how long it takes for a monkey to become Hemingway!
 ![Alt text](https://github.com/preiter93/evolpy/blob/main/examples/monkeys.gif?raw=true)
 
 Feel free to let them write what you want. It might just take a little less than infinite time!
+
+## Parameter study ([c]rossover-rate, [p]reservation-rate, [m]utation-rate)
+
+![](examples/data/c-rate.png) ![](examples/data/p-rate.png) ![](examples/data/m-rate.png)
+
