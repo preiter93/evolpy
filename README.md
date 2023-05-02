@@ -81,7 +81,9 @@ Let's see how long it takes for a monkey to become Hemingway!
 
 Feel free to let them write what you want. It might just take a little less than infinite time!
 
-## Parameter study ([c]rossover-rate, [p]reservation-rate, [m]utation-rate)
+## Parameter study
+[c]rossover-rate               |  [p]reservation-rate          |  [m]utation-rate
+:-----------------------------:|:-----------------------------:|:-----------------------------:
+![](examples/data/c_rate.png)  | ![](examples/data/p_rate.png) | ![](examples/data/m_rate.png)
 
-![](examples/data/c-rate.png) ![](examples/data/p-rate.png) ![](examples/data/m-rate.png)
 
